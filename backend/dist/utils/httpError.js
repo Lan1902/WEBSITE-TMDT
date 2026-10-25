@@ -1,0 +1,15 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.asyncHandler = exports.HttpError = void 0;
+class HttpError extends Error {
+    constructor(status, message) {
+        super(message);
+        this.status = status;
+    }
+}
+exports.HttpError = HttpError;
+// Bọc controller async để lỗi tự chuyển sang error handler
+const asyncHandler = (fn) => (req, res, next) => {
+    fn(req, res, next).catch(next);
+};
+exports.asyncHandler = asyncHandler;
