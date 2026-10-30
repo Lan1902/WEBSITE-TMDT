@@ -95,7 +95,11 @@ export function changeStatus(orderId: string, next: OrderStatus, actor: Actor) {
 
 const ORDER_COLS = `o.id, o.status, o.total_amount::float AS total_amount, o.shipping_name, o.shipping_phone,
   o.shipping_address, o.note, o.created_at, o.updated_at,
-  (SELECT COUNT(*)::int FROM order_items oi WHERE oi.order_id = o.id) AS item_count`;
+  (SELECT COUNT(*)::int FROM order_items oi WHERE oi.order_id = o.id) AS item_count,
+  (SELECT COALESCE(json_agg(json_build_object('product_id', x.product_id, 'name', x.name, 'image_url', x.image_url)), '[]'::json)
+   FROM (SELECT oi.product_id, p.name, p.image_url
+         FROM order_items oi JOIN products p ON p.id = oi.product_id
+         WHERE oi.order_id = o.id ORDER BY oi.id LIMIT 4) x) AS preview`;
 
 export async function listMine(userId: string, page: number, limit: number) {
   const total = (await query<{ n: number }>("SELECT COUNT(*)::int AS n FROM orders WHERE user_id = $1", [userId]))[0].n;

@@ -55,6 +55,7 @@ export interface Cart { items: CartItem[]; total: number; itemCount: number }
 export interface Order {
   id: string; status: string; total_amount: number; shipping_name: string; shipping_phone: string; shipping_address: string;
   note?: string; created_at: string; item_count: number; user_email?: string; user_name?: string;
-  items?: { product_id: string; name: string; quantity: number; unit_price: number; line_total: number }[];
+  items?: { product_id: string; name: string; image_url?: string | null; quantity: number; unit_price: number; line_total: number }[];
+  preview?: { product_id: string; name: string; image_url?: string | null }[];
 }
 export interface Review { id: string; rating: number; comment?: string; created_at: string; user_name: string; is_mine: boolean }
